@@ -1,0 +1,19 @@
+# Proto-Sign Strict Mode Configuration
+# 最严格的 breaking change 检测，适用于公共 API 和生产环境
+# 启用所有主要规则类别，确保最大程度的向后兼容性
+
+version: v1
+breaking:
+  # 使用所有主要类别的规则
+  use_categories:
+    - FILE          # 文件级别检查 (文件删除、包名变更等)
+    - PACKAGE       # 包级别检查 (消息/服务/枚举删除等)  
+    - WIRE          # 线上兼容性检查 (字段类型、编号等)
+    - WIRE_JSON     # JSON 兼容性检查 (JSON 序列化兼容)
+    
+  # 不忽略不稳定包 - 即使标记为 unstable 也要检查
+  ignore_unstable_packages: false
+  
+  # 可以根据需要添加例外规则
+  # except_rules:
+  #   - FIELD_SAME_JSON_NAME  # 如果不关心 JSON 字段名一致性

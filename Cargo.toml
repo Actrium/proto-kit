@@ -1,0 +1,12 @@
+[workspace]
+resolver = "2"
+members = [
+    "proto-fingerprint",
+    "proto-fmt",
+]
+
+[workspace.package]
+edition = "2024"
+license = "Apache-2.0"
+repository = "https://github.com/actor-rtc/proto-kit"
+authors = ["actor-rtc team"]

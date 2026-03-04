@@ -1,0 +1,23 @@
+# Proto-Sign Lenient Mode Configuration  
+# 适中的 breaking change 检测，适用于内部 API 和开发环境
+# 主要关注线上兼容性，允许源码级别的一些变更
+
+version: v1
+breaking:
+  # 只使用关键的线上兼容性检查
+  use_categories:
+    - WIRE_JSON     # JSON 兼容性检查 (最重要)
+    
+  # 忽略标记为不稳定的包
+  ignore_unstable_packages: true
+  
+  # 可以添加特定规则以增强检查
+  use_rules:
+    - MESSAGE_NO_DELETE     # 防止删除重要消息
+    - SERVICE_NO_DELETE     # 防止删除重要服务
+    - PACKAGE_ENUM_NO_DELETE # 防止删除重要枚举
+    
+  # 忽略特定路径下的变更
+  ignore:
+    - "internal/**"         # 忽略内部包
+    - "**/*_test.proto"     # 忽略测试文件

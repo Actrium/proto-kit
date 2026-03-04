@@ -1,0 +1,30 @@
+[package]
+name = "proto-fmt"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Protobuf file normalization, merging and formatting tools"
+keywords = ["protobuf", "formatting", "normalization", "proto"]
+categories = ["development-tools"]
+
+[[bin]]
+name = "proto-fmt"
+path = "src/main.rs"
+
+[lib]
+name = "proto_fmt"
+path = "src/lib.rs"
+
+[dependencies]
+anyhow = "1.0"
+protobuf = "3.7"
+protobuf-parse = "3.7"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tempfile = "3"
+const_format = "0.2"
+clap = { version = "4.5", features = ["derive"] }
+env_logger = "0.11"
+log = "0.4"

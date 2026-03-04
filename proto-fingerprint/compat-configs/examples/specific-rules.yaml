@@ -1,0 +1,30 @@
+# Proto-Sign Specific Rules Configuration
+# 使用具体规则而非类别，可精确控制检查内容
+# 适用于需要精细化控制的场景
+
+version: v1
+breaking:
+  # 使用具体规则列表
+  use_rules:
+    # 核心结构保护
+    - MESSAGE_NO_DELETE         # 不允许删除消息
+    - FIELD_NO_DELETE          # 不允许删除字段  
+    - PACKAGE_ENUM_NO_DELETE   # 不允许删除枚举
+    - SERVICE_NO_DELETE        # 不允许删除服务
+    - RPC_NO_DELETE            # 不允许删除 RPC 方法
+    
+    # 字段兼容性
+    - FIELD_SAME_TYPE          # 字段类型不能变更
+    - FIELD_SAME_CARDINALITY   # 字段基数不能变更 (optional/repeated)
+    - FIELD_SAME_NAME          # 字段名不能变更
+    
+    # 枚举兼容性  
+    - ENUM_VALUE_NO_DELETE     # 不允许删除枚举值
+    - ENUM_VALUE_SAME_NAME     # 枚举值名不能变更
+    
+    # JSON 兼容性
+    - FIELD_SAME_JSON_NAME     # JSON 字段名不能变更
+    - ENUM_SAME_JSON_FORMAT    # 枚举 JSON 格式不能变更
+    
+  # 忽略不稳定包
+  ignore_unstable_packages: true

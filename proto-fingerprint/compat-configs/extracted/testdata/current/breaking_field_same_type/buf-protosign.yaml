@@ -1,0 +1,6 @@
+# Generated from buf configuration
+# Original file: buf.yaml
+version: v1
+breaking:
+  use_rules:
+    - FIELD_SAME_TYPE

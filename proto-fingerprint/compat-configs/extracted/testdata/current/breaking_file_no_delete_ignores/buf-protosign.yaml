@@ -1,0 +1,9 @@
+# Generated from buf configuration
+# Original file: buf.yaml
+version: v1
+breaking:
+  use_rules:
+    - FILE_NO_DELETE
+  ignore:
+    - a/c
+    - no_package.proto

@@ -1,0 +1,7 @@
+# Generated from buf configuration
+# Original file: tmp.makgBOUJSa
+version: v1
+breaking:
+  use_categories:
+    - WIRE_JSON
+  ignore_unstable_packages: true

@@ -1,0 +1,17 @@
+# Generated from buf configuration with custom suffix rules
+# Original files: buf.yaml, buf.policy1.yaml, buf.policy2.yaml
+version: v1
+breaking:
+  use_rules:
+    - ENUM_NO_DELETE
+    - ENUM_VALUE_NO_DELETE
+    - SERVICE_SUFFIXES_NO_CHANGE
+    - MESSAGE_SUFFIXES_NO_CHANGE
+    - ENUM_SUFFIXES_NO_CHANGE
+  service_no_change_suffixes:
+    - Legacy
+    - Bridge
+  message_no_change_suffixes:
+    - Stable
+  enum_no_change_suffixes:
+    - Status

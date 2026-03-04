@@ -1,0 +1,18 @@
+# Proto-Sign Wire-Only Configuration
+# 只检查线上二进制兼容性，不关心源码兼容性
+# 适用于只关心序列化格式兼容的场景
+
+version: v1
+breaking:
+  # 只使用线上兼容性检查
+  use_categories:
+    - WIRE          # 二进制线上兼容性
+    
+  # 忽略不稳定包
+  ignore_unstable_packages: true
+  
+  # 排除一些不影响二进制兼容的规则  
+  except_rules:
+    - FIELD_SAME_NAME       # 字段名变更不影响二进制
+    - MESSAGE_SAME_VALUES   # 消息选项变更通常不影响二进制
+    - ENUM_SAME_VALUES      # 枚举选项变更通常不影响二进制
