@@ -6,11 +6,9 @@ use std::process::Command;
 use tempfile::TempDir;
 
 fn get_binary_path() -> PathBuf {
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.push("target");
-    path.push("debug");
-    path.push("proto-regulate");
-    path
+    // CARGO_BIN_EXE_proto-fmt is set by Cargo during integration tests
+    // and points to the compiled binary regardless of workspace layout.
+    PathBuf::from(env!("CARGO_BIN_EXE_proto-fmt"))
 }
 
 #[test]
