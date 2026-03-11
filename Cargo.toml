@@ -10,3 +10,6 @@ edition = "2024"
 license = "Apache-2.0"
 repository = "https://github.com/actor-rtc/proto-kit"
 authors = ["actor-rtc team"]
+
+[workspace.lints.clippy]
+collapsible_if = "allow"

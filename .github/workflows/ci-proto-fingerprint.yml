@@ -26,12 +26,23 @@ jobs:
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
 
       - name: Cache cargo artifacts
         uses: Swatinem/rust-cache@v2
 
+      - name: Cargo fmt
+        run: cargo fmt --all -- --check
+
+      - name: Cargo clippy
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+
       - name: Cargo check
         run: cargo check -p proto-fingerprint
+
+      - name: Cargo test
+        run: cargo test --workspace
 
       - name: Cargo package list
         run: cargo package -p proto-fingerprint --locked --list

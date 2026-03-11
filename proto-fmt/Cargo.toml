@@ -17,6 +17,9 @@ path = "src/main.rs"
 name = "proto_fmt"
 path = "src/lib.rs"
 
+[lints]
+workspace = true
+
 [dependencies]
 anyhow = "1.0.102"
 protobuf = "3.7.2"
