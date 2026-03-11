@@ -1,6 +1,6 @@
-# Proto-Sign 兼容性配置管理
+# Proto-Fingerprint 兼容性配置管理
 
-这个目录包含 Proto-Sign 兼容性检查的配置文件和管理工具。
+这个目录包含 Proto-Fingerprint 兼容性检查的配置文件和管理工具。
 
 ## 目录结构
 
@@ -23,12 +23,12 @@ compat-configs/
 
 ### `extract_buf_configs.sh`
 
-从上游Buf项目提取配置文件并转换为proto-sign格式。
+从上游 Buf 项目提取配置文件并转换为 proto-fingerprint 格式。
 
 #### 功能特性
 
 - 🔄 **自动提取**: 从buf项目提取所有相关的YAML配置文件
-- 🔧 **格式转换**: 将buf格式转换为proto-sign的简化格式  
+- 🔧 **格式转换**: 将 buf 格式转换为 proto-fingerprint 的简化格式
 - 📂 **分类整理**: 按照用途分类存储（主配置、测试数据、示例）
 - 📊 **生成报告**: 自动生成提取摘要和统计信息
 - ⚙️ **智能转换**: 自动识别categories vs rules配置
@@ -79,18 +79,18 @@ BUF_BRANCH=dev ./compat-configs/extract_buf_configs.sh
 ```
 compat-configs/extracted/
 ├── main/
-│   └── proto-sign-main.yaml    # 转换后的主配置
+│   └── generated-main.yaml     # 转换后的主配置
 ├── testdata/
 │   ├── current/
 │   │   └── breaking_*/
 │   │       ├── *.proto         # 测试用例proto文件
 │   │       ├── buf.yaml        # 原始测试配置
-│   │       └── *-protosign.yaml # 转换后的配置
+│   │       └── *-proto-fingerprint.yaml # 转换后的配置
 │   └── previous/
 │       └── breaking_*/
 │           ├── *.proto         # 基线proto文件
 │           ├── buf.yaml        # 原始配置
-│           └── *-protosign.yaml # 转换后的配置
+│           └── *-proto-fingerprint.yaml # 转换后的配置
 └── EXTRACTION_SUMMARY.md       # 提取摘要报告
 ```
 
@@ -107,7 +107,7 @@ breaking:
     - PACKAGE       # 类别
     - FIELD_NO_DELETE  # 具体规则
 
-# 转换为proto-sign格式
+# 转换为 proto-fingerprint 格式
 version: v1
 breaking:
   use_categories:   # 自动识别并分类
@@ -121,7 +121,7 @@ breaking:
 
 1. **定期同步**: 当buf项目有重大更新时运行脚本
 2. **对比分析**: 检查新增或修改的规则配置
-3. **更新适配**: 根据提取结果更新proto-sign的实现
+3. **更新适配**: 根据提取结果更新 proto-fingerprint 的实现
 4. **测试验证**: 使用提取的测试配置验证兼容性
 
 #### 示例使用场景
@@ -143,7 +143,7 @@ grep -r "use_categories" compat-configs/extracted/testdata/ | sort -u
 find compat-configs/extracted/ -name "*.yaml" -exec grep -l "MESSAGE_NO_DELETE" {} \;
 
 # 6. 对比不同版本的配置变化
-git diff HEAD~1 compat-configs/extracted/main/proto-sign-main.yaml
+git diff HEAD~1 compat-configs/extracted/main/
 
 # 7. 定期更新工作流
 # 备份当前配置
@@ -163,4 +163,4 @@ diff -r compat-configs/extracted.backup compat-configs/extracted
 - **权限错误**: 确保脚本有执行权限 `chmod +x extract_buf_configs.sh`
 - **临时目录清理**: 脚本会在退出时自动清理临时目录
 
-这个脚本是维护proto-sign与上游buf项目同步的关键工具，建议在CI/CD流程中定期运行。
+这个脚本是维护 proto-fingerprint 与上游 Buf 项目同步的关键工具，建议在 CI/CD 流程中定期运行。

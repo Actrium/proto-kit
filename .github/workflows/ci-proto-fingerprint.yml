@@ -1,0 +1,40 @@
+name: ci-proto-fingerprint
+
+on:
+  push:
+    paths:
+      - 'proto-fingerprint/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/ci-proto-fingerprint.yml'
+      - '.github/workflows/publish-proto-fingerprint.yml'
+  pull_request:
+    paths:
+      - 'proto-fingerprint/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/ci-proto-fingerprint.yml'
+      - '.github/workflows/publish-proto-fingerprint.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo artifacts
+        uses: Swatinem/rust-cache@v2
+
+      - name: Cargo check
+        run: cargo check -p proto-fingerprint
+
+      - name: Cargo package list
+        run: cargo package -p proto-fingerprint --locked --list
+
+      - name: Cargo publish dry run
+        run: cargo publish -p proto-fingerprint --dry-run --locked --registry crates-io

@@ -1,4 +1,4 @@
-# proto-regulate
+# proto-fmt
 
 Protobuf file normalization, merging and formatting tools.
 
@@ -18,31 +18,31 @@ The package provides a CLI tool for debugging and testing:
 
 ```bash
 # Output to stdout
-proto-regulate normalize input.proto
+proto-fmt normalize input.proto
 
 # Output to file
-proto-regulate normalize input.proto -o output.proto
+proto-fmt normalize input.proto -o output.proto
 ```
 
 #### Normalize directory (merge by package and split)
 
 ```bash
 # Merge all proto files in directory by package and split to output directory
-proto-regulate normalize /path/to/protos -o /path/to/output
+proto-fmt normalize /path/to/protos -o /path/to/output
 ```
 
 #### Inspect proto descriptor
 
 ```bash
 # View detailed descriptor information
-proto-regulate inspect input.proto
+proto-fmt inspect input.proto
 ```
 
 #### Verbose logging
 
 ```bash
 # Enable verbose logging with -v flag
-proto-regulate -v normalize input.proto
+proto-fmt -v normalize input.proto
 ```
 
 ### Library Usage
@@ -50,7 +50,7 @@ proto-regulate -v normalize input.proto
 #### Merge proto files by package
 
 ```rust
-use proto_regulate::merge_by_package;
+use proto_fmt::merge_by_package;
 
 let file1 = r#"
     syntax = "proto3";
@@ -74,7 +74,7 @@ for result in results {
 ### Convert descriptor to proto text
 
 ```rust
-use proto_regulate::{parse_proto_to_file_descriptor, descriptor_to_proto};
+use proto_fmt::{descriptor_to_proto, parse_proto_to_file_descriptor};
 
 let proto_content = r#"
     syntax = "proto3";

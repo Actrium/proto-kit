@@ -1,6 +1,6 @@
-//! Proto-regulate CLI tool for debugging and testing
+//! proto-fmt CLI tool for debugging and testing
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use clap::{Parser, Subcommand};
 use log::{debug, error, info, warn};
 use proto_fmt::{descriptor_to_proto, merge_by_package, parse_proto_to_file_descriptor};
@@ -8,7 +8,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 #[derive(Parser)]
-#[command(name = "proto-regulate")]
+#[command(name = "proto-fmt")]
 #[command(about = "Protobuf file normalization and debugging tool", long_about = None)]
 struct Cli {
     #[command(subcommand)]

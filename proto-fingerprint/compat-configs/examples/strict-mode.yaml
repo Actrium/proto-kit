@@ -1,4 +1,4 @@
-# Proto-Sign Strict Mode Configuration
+# Proto-Fingerprint Strict Mode Configuration
 # 最严格的 breaking change 检测，适用于公共 API 和生产环境
 # 启用所有主要规则类别，确保最大程度的向后兼容性
 

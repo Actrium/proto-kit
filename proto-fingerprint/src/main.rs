@@ -5,7 +5,7 @@ use std::fs;
 use std::path::PathBuf;
 
 #[derive(Parser)]
-#[command(name = "proto-sign")]
+#[command(name = "proto-fingerprint")]
 #[command(about = "Check Protobuf file compatibility and generate semantic fingerprints")]
 #[command(version)]
 struct Args {
@@ -31,6 +31,8 @@ enum Commands {
     },
     #[command(about = "Check for breaking changes using Buf-compatible rules")]
     Breaking {
+        #[arg(long, help = "Path to a YAML config file")]
+        config: Option<PathBuf>,
         #[arg(help = "Path to the old .proto file")]
         old_file: PathBuf,
         #[arg(help = "Path to the new .proto file")]
@@ -128,6 +130,7 @@ fn main() -> Result<()> {
             println!("{fingerprint}");
         }
         Commands::Breaking {
+            config,
             old_file,
             new_file,
             format,
@@ -147,8 +150,18 @@ fn main() -> Result<()> {
             let old_spec = Spec::try_from(old_content.as_str())?;
             let new_spec = Spec::try_from(new_content.as_str())?;
 
-            // Build configuration
-            let mut config = BreakingConfig::default();
+            // Load file-based configuration first, then let CLI flags override it.
+            let mut config = if let Some(config_path) = config {
+                BreakingConfig::from_yaml_file(&config_path).map_err(|e| {
+                    anyhow::anyhow!(
+                        "Failed to load config file '{}': {}",
+                        config_path.display(),
+                        e
+                    )
+                })?
+            } else {
+                BreakingConfig::default()
+            };
 
             if let Some(rules) = use_rules {
                 config.use_rules = rules.split(',').map(|s| s.trim().to_string()).collect();

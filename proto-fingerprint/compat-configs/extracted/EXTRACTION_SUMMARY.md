@@ -3,12 +3,12 @@
 Generated on: Sun Sep 14 02:01:43 PM CST 2025
 Buf git repository: https://github.com/bufbuild/buf.git
 Buf branch/commit: main (b57df30)
-Extraction target: /mnt/sdb1/proto/proto-sign/compat-configs/extracted
+Extraction target: /mnt/sdb1/proto/proto-fingerprint/compat-configs/extracted
 
 ## Extracted Files
 
 ### Main Configuration
-- proto-sign-main.yaml (converted from Buf main config)
+- proto-fingerprint-main.yaml (converted from Buf main config)
 
 ### Test Data Configurations
 - YAML files: 141

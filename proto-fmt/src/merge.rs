@@ -3,8 +3,8 @@
 //! Merges multiple proto file contents by package name, producing
 //! normalized, deduplicated output.
 
-use crate::text_gen::{TextGenerator, TextGeneratorOptions, TEXT_GENERATOR_VERSION};
-use anyhow::{anyhow, bail, Context, Result};
+use crate::text_gen::{TEXT_GENERATOR_VERSION, TextGenerator, TextGeneratorOptions};
+use anyhow::{Context, Result, anyhow, bail};
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf_parse::Parser;
 use std::collections::{BTreeMap, BTreeSet, HashMap};

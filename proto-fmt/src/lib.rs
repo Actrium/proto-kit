@@ -9,8 +9,8 @@ pub mod merge;
 pub mod text_gen;
 
 // Re-export main types
-pub use merge::{merge_by_package, MergeResult};
-pub use text_gen::{descriptor_to_proto, TextGenerator, TextGeneratorOptions};
+pub use merge::{MergeResult, merge_by_package};
+pub use text_gen::{TextGenerator, TextGeneratorOptions, descriptor_to_proto};
 
 use anyhow::{Context, Result};
 use protobuf::descriptor::FileDescriptorProto;

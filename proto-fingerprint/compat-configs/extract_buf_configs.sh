@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Extract and convert Buf configurations to proto-sign format
+# Extract and convert Buf configurations to proto-fingerprint format
 # This script helps maintain compatibility with upstream Buf updates
-# Note: Only generates *-protosign.yaml files, original buf.yaml files are not copied
+# Note: Only generates *-proto-fingerprint.yaml files, original buf.yaml files are not copied
 
 set -uo pipefail
 
@@ -67,15 +67,15 @@ setup_directories() {
 extract_main_config() {
     local buf_yaml="$BUF_PROJECT_ROOT/buf.yaml"
     local temp_file=$(mktemp)
-    local output_file="$EXTRACTED_CONFIGS_DIR/main/proto-sign-main.yaml"
+    local output_file="$EXTRACTED_CONFIGS_DIR/main/proto-fingerprint-main.yaml"
     
     if [[ -f "$buf_yaml" ]]; then
         # Copy to temp file for conversion only
         cp "$buf_yaml" "$temp_file"
-        log_info "Found main buf.yaml, converting to proto-sign format"
+        log_info "Found main buf.yaml, converting to proto-fingerprint format"
         
-        # Convert directly to proto-sign format (skip copying original)
-        convert_to_protosign_format "$temp_file" "$output_file"
+        # Convert directly to proto-fingerprint format (skip copying original)
+        convert_to_proto_fingerprint_format "$temp_file" "$output_file"
         
         # Cleanup temp file
         rm -f "$temp_file"
@@ -129,9 +129,9 @@ extract_testdata_configs() {
         # Create directory structure
         mkdir -p "$(dirname "$output_file")"
         
-        # Convert to proto-sign format directly (skip copying original)
-        local protosign_file="${output_file%.yaml}-protosign.yaml"
-        if ! convert_to_protosign_format "$yaml_file" "$protosign_file"; then
+        # Convert to proto-fingerprint format directly (skip copying original)
+        local proto_fingerprint_file="${output_file%.yaml}-proto-fingerprint.yaml"
+        if ! convert_to_proto_fingerprint_format "$yaml_file" "$proto_fingerprint_file"; then
             log_warn "Failed to convert: $yaml_file"
             continue
         fi
@@ -171,8 +171,8 @@ extract_testdata_configs() {
     log_info "Extracted $count YAML configuration files and $proto_count proto files"
 }
 
-# Convert buf.yaml format to proto-sign format
-convert_to_protosign_format() {
+# Convert buf.yaml format to proto-fingerprint format
+convert_to_proto_fingerprint_format() {
     local input_file="$1"
     local output_file="$2"
     
@@ -255,7 +255,7 @@ Extraction target: $EXTRACTED_CONFIGS_DIR
 ## Extracted Files
 
 ### Main Configuration
-- proto-sign-main.yaml (converted from Buf main config)
+- proto-fingerprint-main.yaml (converted from Buf main config)
 
 ### Test Data Configurations
 - YAML files: $(find "$EXTRACTED_CONFIGS_DIR/testdata" -name "*.yaml" 2>/dev/null | wc -l || echo "0")
@@ -269,7 +269,7 @@ Examples are manually maintained in compat-configs/examples/ (not auto-generated
 - Total files: $(find "$EXTRACTED_CONFIGS_DIR" -type f 2>/dev/null | wc -l || echo "0")
 - YAML files (all): $(find "$EXTRACTED_CONFIGS_DIR" -name "*.yaml" 2>/dev/null | wc -l || echo "0") 
 - Proto files (all): $(find "$EXTRACTED_CONFIGS_DIR" -name "*.proto" 2>/dev/null | wc -l || echo "0")
-- Proto-sign configs: $(find "$EXTRACTED_CONFIGS_DIR" -name "*protosign.yaml" 2>/dev/null | wc -l || echo "0")
+- Proto-fingerprint configs: $(find "$EXTRACTED_CONFIGS_DIR" -name "*proto-fingerprint.yaml" 2>/dev/null | wc -l || echo "0")
 
 ## Rule Categories Found
 
@@ -277,7 +277,7 @@ Examples are manually maintained in compat-configs/examples/ (not auto-generated
 EOF
     
     # Extract unique rule categories
-    find "$EXTRACTED_CONFIGS_DIR" -name "*protosign.yaml" -exec grep -h "use_categories:" -A 20 {} \; 2>/dev/null | \
+    find "$EXTRACTED_CONFIGS_DIR" -name "*proto-fingerprint.yaml" -exec grep -h "use_categories:" -A 20 {} \; 2>/dev/null | \
         grep "^    - " | sort -u >> "$summary_file" 2>/dev/null || true
     
     cat >> "$summary_file" << EOF
@@ -286,7 +286,7 @@ EOF
 EOF
     
     # Extract unique rule IDs
-    find "$EXTRACTED_CONFIGS_DIR" -name "*protosign.yaml" -exec grep -h "use_rules:" -A 50 {} \; 2>/dev/null | \
+    find "$EXTRACTED_CONFIGS_DIR" -name "*proto-fingerprint.yaml" -exec grep -h "use_rules:" -A 50 {} \; 2>/dev/null | \
         grep "^    - " | sort -u | head -20 >> "$summary_file" 2>/dev/null || true
     
     log_info "Generated summary report: $summary_file"
@@ -406,7 +406,7 @@ case "${1:-}" in
     --help|-h)
         echo "Usage: $0 [options]"
         echo ""
-        echo "Extract and convert Buf configurations to proto-sign format"
+        echo "Extract and convert Buf configurations to proto-fingerprint format"
         echo ""
         echo "Options:"
         echo "  --help, -h     Show this help message"

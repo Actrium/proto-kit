@@ -5,9 +5,9 @@
 
 use anyhow::Result;
 use protobuf::descriptor::{
-    field_descriptor_proto::{Label, Type},
     DescriptorProto, EnumDescriptorProto, EnumValueDescriptorProto, FieldDescriptorProto,
     FileDescriptorProto, MethodDescriptorProto, OneofDescriptorProto, ServiceDescriptorProto,
+    field_descriptor_proto::{Label, Type},
 };
 use std::fmt::Write;
 

@@ -2,7 +2,7 @@
 
 ## 概述
 
-本文档详细阐述如何跟进上游Buf项目的更新，保持proto-sign与Buf breaking change检测规则的1:1同步。适用于需要维护和扩展proto-sign项目的开发者。
+本文档详细阐述如何跟进上游 Buf 项目的更新，保持 proto-fingerprint 与 Buf breaking change 检测规则的 1:1 同步。适用于需要维护和扩展 proto-fingerprint 项目的开发者。
 
 ## 目录
 
@@ -79,8 +79,8 @@ git log --grep="breaking" --grep="rule" --since="1 month ago"
 我们已有完整的测试数据抽取脚本：
 
 ```bash
-# 位置：proto-sign/compat-configs/extract_buf_configs.sh
-cd /mnt/sdb1/proto/proto-sign/compat-configs
+# 位置：proto-fingerprint/compat-configs/extract_buf_configs.sh
+cd /mnt/sdb1/proto/proto-fingerprint/compat-configs
 
 # 抽取最新版本数据
 ./extract_buf_configs.sh
@@ -280,7 +280,7 @@ git commit -m "feat: implement Buf vX.Y.Z breaking rules
 - Update test data from Buf upstream
 - Maintain 1:1 compatibility with Buf vX.Y.Z
 
-🤖 Generated with proto-sign sync process
+🤖 Generated with proto-fingerprint sync process
 
 Co-Authored-By: Claude <noreply@anthropic.com>"
 
@@ -400,7 +400,7 @@ cp -r /some/local/testdata tests/
 ```bash
 # 确保版本一致性
 buf --version          # buf version
-cargo --version        # proto-sign version
+cargo --version        # proto-fingerprint version
 git log -1 --oneline   # 同步提交记录
 ```
 
@@ -527,7 +527,7 @@ No such file or directory: compat-configs/extracted/testdata
 **解决方案：**
 ```bash
 # 确保在正确目录运行
-cd /mnt/sdb1/proto/proto-sign
+cd /mnt/sdb1/proto/proto-fingerprint
 ./compat-configs/extract_buf_configs.sh
 ```
 
@@ -686,4 +686,4 @@ jobs:
 
 ---
 
-*最后更新：2024年9月 | proto-sign v0.2.0 | 支持Buf全部71个breaking规则*
+*最后更新：2024年9月 | proto-fingerprint v0.2.0 | 支持 Buf 全部 71 个 breaking 规则*
