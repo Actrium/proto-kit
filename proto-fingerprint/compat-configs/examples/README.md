@@ -1,6 +1,6 @@
-# Proto-Sign 配置示例
+# Proto-Fingerprint 配置示例
 
-本目录包含不同场景下的 proto-sign 配置示例，帮助用户快速开始使用。
+本目录包含不同场景下的 proto-fingerprint 配置示例，帮助用户快速开始使用。
 
 ## 📋 配置文件说明
 
@@ -33,19 +33,19 @@
 ### 快速开始
 ```bash
 # 复制适合的配置模板
-cp compat-configs/examples/lenient-mode.yaml proto-sign.yaml
+cp compat-configs/examples/lenient-mode.yaml proto-fingerprint.yaml
 
 # 根据项目需求调整配置
-vim proto-sign.yaml
+vim proto-fingerprint.yaml
 
 # 运行检查
-proto-sign breaking --config proto-sign.yaml current/ previous/
+proto-fingerprint breaking --config proto-fingerprint.yaml current/ previous/
 ```
 
 ### 配置格式说明
 
 ```yaml
-version: v1                    # proto-sign 配置版本
+version: v1                    # proto-fingerprint 配置版本
 breaking:
   use_categories:              # 使用规则类别 (推荐)
     - FILE                     # 文件级检查
@@ -84,6 +84,6 @@ breaking:
 
 ## 🔗 相关资源
 
-- [Proto-Sign 文档](../../../README.md)
+- [Proto-Fingerprint 文档](../../../README.md)
 - [规则完整列表](../../extracted/EXTRACTION_SUMMARY.md)
 - [测试用例](../../extracted/testdata/)

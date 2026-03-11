@@ -1,4 +1,4 @@
-# Proto-Sign Wire-Only Configuration
+# Proto-Fingerprint Wire-Only Configuration
 # 只检查线上二进制兼容性，不关心源码兼容性
 # 适用于只关心序列化格式兼容的场景
 

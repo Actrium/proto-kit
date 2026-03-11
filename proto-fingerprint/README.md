@@ -1,4 +1,4 @@
-# Proto-Sign
+# Proto-Fingerprint
 
 A Rust tool for Protocol Buffers compatibility checking and semantic fingerprinting.
 
@@ -13,8 +13,8 @@ A Rust tool for Protocol Buffers compatibility checking and semantic fingerprint
 
 ```bash
 # Build from source
-git clone https://github.com/your-org/proto-sign.git
-cd proto-sign
+git clone https://github.com/actor-rtc/proto-kit.git
+cd proto-kit/proto-fingerprint
 cargo install --path .
 
 # Extract test configurations (for development)
@@ -27,39 +27,39 @@ bash ./compat-configs/extract_buf_configs.sh
 
 ```bash
 # Basic breaking change check
-proto-sign breaking old.proto new.proto
+proto-fingerprint breaking old.proto new.proto
 
 # JSON output
-proto-sign breaking old.proto new.proto --format json
+proto-fingerprint breaking old.proto new.proto --format json
 
 # Use specific rule categories
-proto-sign breaking old.proto new.proto --use-categories FILE,WIRE
+proto-fingerprint breaking old.proto new.proto --use-categories FILE,WIRE
 ```
 
 ### Quick Compatibility Check
 
 ```bash
 # Three-level compatibility assessment (Green/Yellow/Red)
-proto-sign compare old.proto new.proto
+proto-fingerprint compare old.proto new.proto
 ```
 
 ### Semantic Fingerprinting
 
 ```bash
 # Generate semantic fingerprint
-proto-sign fingerprint file.proto
+proto-fingerprint fingerprint file.proto
 ```
 
 ## Configuration
 
-Proto-Sign uses YAML configuration files. Copy a template to get started:
+Proto-Fingerprint uses YAML configuration files. Copy a template to get started:
 
 ```bash
 # Choose a configuration template
-cp compat-configs/examples/strict-mode.yaml proto-sign.yaml
+cp compat-configs/examples/strict-mode.yaml proto-fingerprint.yaml
 
 # Use custom configuration
-proto-sign breaking old.proto new.proto --config proto-sign.yaml
+proto-fingerprint breaking old.proto new.proto --config proto-fingerprint.yaml
 ```
 
 ### Configuration Templates
@@ -96,7 +96,7 @@ breaking:
 ## Library Usage
 
 ```rust
-use proto_sign::spec::{Spec, Compatibility};
+use proto_fingerprint::spec::{Compatibility, Spec};
 
 let old_spec = Spec::try_from(old_proto_content)?;
 let new_spec = Spec::try_from(new_proto_content)?;

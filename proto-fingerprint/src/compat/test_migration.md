@@ -40,8 +40,8 @@ func TestRunBreakingEnumNoDelete(t *testing.T) {
 
 ### 阶段 1: 复制测试数据 ✅
 ```bash
-# 复制 Buf 的测试数据到 proto-sign
-cp -r buf/private/bufpkg/bufcheck/testdata/breaking proto-sign/tests/testdata/
+# 复制 Buf 的测试数据到 proto-fingerprint
+cp -r buf/private/bufpkg/bufcheck/testdata/breaking proto-fingerprint/tests/testdata/
 ```
 
 ### 阶段 2: 创建测试框架
@@ -149,4 +149,4 @@ pub fn test_breaking_rule(
 3. **批量实现**：按优先级实现规则处理器
 4. **持续集成**：确保所有测试通过
 
-这个移植计划将确保 proto-sign 与 Buf 的完全兼容性，同时提供高质量的测试覆盖。
+这个移植计划将确保 proto-fingerprint 与 Buf 的完全兼容性，同时提供高质量的测试覆盖。

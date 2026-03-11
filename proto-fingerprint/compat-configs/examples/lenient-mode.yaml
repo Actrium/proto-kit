@@ -1,4 +1,4 @@
-# Proto-Sign Lenient Mode Configuration  
+# Proto-Fingerprint Lenient Mode Configuration
 # 适中的 breaking change 检测，适用于内部 API 和开发环境
 # 主要关注线上兼容性，允许源码级别的一些变更
 
