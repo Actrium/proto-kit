@@ -8,7 +8,7 @@ on:
       - 'Cargo.toml'
       - 'Cargo.lock'
       - '.github/workflows/ci-rust-workspace.yml'
-      - '.github/workflows/publish-proto-fingerprint.yml'
+      - '.github/workflows/publish-crates.yml'
   pull_request:
     paths:
       - 'proto-fingerprint/**'
@@ -16,7 +16,7 @@ on:
       - 'Cargo.toml'
       - 'Cargo.lock'
       - '.github/workflows/ci-rust-workspace.yml'
-      - '.github/workflows/publish-proto-fingerprint.yml'
+      - '.github/workflows/publish-crates.yml'
 
 jobs:
   rust-static-checks:
@@ -76,7 +76,13 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Cargo package list
+        run: cargo package -p proto-fmt --locked --list
+
+      - name: Cargo publish dry run proto-fmt
+        run: cargo publish -p proto-fmt --dry-run --locked --registry crates-io
+
+      - name: Cargo package list proto-fingerprint
         run: cargo package -p proto-fingerprint --locked --list
 
-      - name: Cargo publish dry run
+      - name: Cargo publish dry run proto-fingerprint
         run: cargo publish -p proto-fingerprint --dry-run --locked --registry crates-io

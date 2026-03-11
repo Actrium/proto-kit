@@ -1,9 +1,9 @@
-name: publish-proto-fingerprint
+name: publish-crates
 
 on:
   push:
     tags:
-      - 'proto-fingerprint-v*'
+      - 'v*'
 
 jobs:
   publish:
@@ -38,8 +38,8 @@ jobs:
         env:
           TAG_NAME: ${{ github.ref_name }}
         run: |
-          expected_version="${TAG_NAME#proto-fingerprint-v}"
-          cargo_version="$(python - <<'PY'
+          expected_version="${TAG_NAME#v}"
+          proto_fingerprint_version="$(python - <<'PY'
           import tomllib
           from pathlib import Path
 
@@ -49,9 +49,24 @@ jobs:
           print(data["package"]["version"])
           PY
           )"
+          proto_fmt_version="$(python - <<'PY'
+          import tomllib
+          from pathlib import Path
 
-          if [ "${expected_version}" != "${cargo_version}" ]; then
-            echo "Tag version ${expected_version} does not match Cargo.toml version ${cargo_version}."
+          cargo_toml = Path("proto-fmt/Cargo.toml")
+          with cargo_toml.open("rb") as fh:
+              data = tomllib.load(fh)
+          print(data["package"]["version"])
+          PY
+          )"
+
+          if [ "${expected_version}" != "${proto_fingerprint_version}" ]; then
+            echo "Tag version ${expected_version} does not match proto-fingerprint version ${proto_fingerprint_version}."
+            exit 1
+          fi
+
+          if [ "${expected_version}" != "${proto_fmt_version}" ]; then
+            echo "Tag version ${expected_version} does not match proto-fmt version ${proto_fmt_version}."
             exit 1
           fi
 
@@ -59,7 +74,7 @@ jobs:
         run: cargo fmt --all -- --check
 
       - name: Cargo check
-        run: cargo check -p proto-fingerprint
+        run: cargo check --workspace
 
       - name: Cargo clippy
         run: cargo clippy --workspace --all-targets --all-features -- -D warnings
@@ -68,16 +83,53 @@ jobs:
         run: cargo test --workspace
 
       - name: Cargo publish dry run
+        run: cargo publish -p proto-fmt --dry-run --locked --registry crates-io
+
+      - name: Cargo publish dry run proto-fingerprint
         run: cargo publish -p proto-fingerprint --dry-run --locked --registry crates-io
 
-      - name: Publish crate
-        run: cargo publish -p proto-fingerprint --locked --registry crates-io
+      - name: Publish proto-fmt
+        run: cargo publish -p proto-fmt --locked --registry crates-io
 
-      - name: Wait for crates.io visibility
+      - name: Wait for proto-fmt visibility
         env:
           PACKAGE_VERSION: ${{ github.ref_name }}
         run: |
-          expected_version="${PACKAGE_VERSION#proto-fingerprint-v}"
+          expected_version="${PACKAGE_VERSION#v}"
+          url="https://crates.io/api/v1/crates/proto-fmt"
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent "${url}" | python - "${expected_version}" <<'PY'
+          import json
+          import sys
+
+          expected = sys.argv[1]
+          payload = json.load(sys.stdin)
+          versions = payload.get("versions", [])
+          if any(version.get("num") == expected for version in versions):
+              sys.exit(0)
+          sys.exit(1)
+          PY
+            then
+              echo "proto-fmt ${expected_version} is visible on crates.io."
+              exit 0
+            fi
+
+            echo "Waiting for proto-fmt ${expected_version} to appear on crates.io (${attempt}/30)..."
+            sleep 10
+          done
+
+          echo "proto-fmt ${expected_version} was not visible on crates.io before timeout."
+          exit 1
+
+      - name: Publish proto-fingerprint
+        run: cargo publish -p proto-fingerprint --locked --registry crates-io
+
+      - name: Wait for proto-fingerprint visibility
+        env:
+          PACKAGE_VERSION: ${{ github.ref_name }}
+        run: |
+          expected_version="${PACKAGE_VERSION#v}"
           url="https://crates.io/api/v1/crates/proto-fingerprint"
 
           for attempt in $(seq 1 30); do
