@@ -88,70 +88,30 @@ jobs:
       - name: Cargo publish dry run proto-fingerprint
         run: cargo publish -p proto-fingerprint --dry-run --locked --registry crates-io
 
-      - name: Check proto-fmt version on crates.io
-        id: proto_fmt_version
-        env:
-          PACKAGE_VERSION: ${{ github.ref_name }}
-        run: |
-          expected_version="${PACKAGE_VERSION#v}"
-          response="$(curl --fail --silent --show-error --retry 5 --retry-delay 2 \
-            "https://crates.io/api/v1/crates/proto-fmt" || true)"
-
-          if [ -z "${response}" ]; then
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          if RESPONSE="${response}" python - "${expected_version}" <<'PY'
-          import json
-          import os
-          import sys
-
-          expected = sys.argv[1]
-          payload = json.loads(os.environ["RESPONSE"])
-          versions = payload.get("versions", [])
-          sys.exit(0 if any(version.get("num") == expected for version in versions) else 1)
-          PY
-          then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Publish proto-fmt
-        if: steps.proto_fmt_version.outputs.exists != 'true'
-        run: cargo publish -p proto-fmt --locked --registry crates-io
-
-      - name: Check proto-fingerprint version on crates.io
-        id: proto_fingerprint_version
-        env:
-          PACKAGE_VERSION: ${{ github.ref_name }}
         run: |
-          expected_version="${PACKAGE_VERSION#v}"
-          response="$(curl --fail --silent --show-error --retry 5 --retry-delay 2 \
-            "https://crates.io/api/v1/crates/proto-fingerprint" || true)"
+          set +e
+          output="$(cargo publish -p proto-fmt --locked --registry crates-io 2>&1)"
+          status=$?
+          set -e
+          printf '%s\n' "$output"
 
-          if [ -z "${response}" ]; then
-            echo "exists=false" >> "$GITHUB_OUTPUT"
+          if [ "$status" -eq 0 ]; then
             exit 0
           fi
 
-          if RESPONSE="${response}" python - "${expected_version}" <<'PY'
-          import json
-          import os
-          import sys
-
-          expected = sys.argv[1]
-          payload = json.loads(os.environ["RESPONSE"])
-          versions = payload.get("versions", [])
-          sys.exit(0 if any(version.get("num") == expected for version in versions) else 1)
-          PY
-          then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
+          printf '%s\n' "$output" | grep -F 'already exists on crates.io index' >/dev/null
 
       - name: Publish proto-fingerprint
-        if: steps.proto_fingerprint_version.outputs.exists != 'true'
-        run: cargo publish -p proto-fingerprint --locked --registry crates-io
+        run: |
+          set +e
+          output="$(cargo publish -p proto-fingerprint --locked --registry crates-io 2>&1)"
+          status=$?
+          set -e
+          printf '%s\n' "$output"
+
+          if [ "$status" -eq 0 ]; then
+            exit 0
+          fi
+
+          printf '%s\n' "$output" | grep -F 'already exists on crates.io index' >/dev/null
