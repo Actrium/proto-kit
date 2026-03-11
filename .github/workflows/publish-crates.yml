@@ -88,70 +88,70 @@ jobs:
       - name: Cargo publish dry run proto-fingerprint
         run: cargo publish -p proto-fingerprint --dry-run --locked --registry crates-io
 
+      - name: Check proto-fmt version on crates.io
+        id: proto_fmt_version
+        env:
+          PACKAGE_VERSION: ${{ github.ref_name }}
+        run: |
+          expected_version="${PACKAGE_VERSION#v}"
+          response="$(curl --fail --silent --show-error --retry 5 --retry-delay 2 \
+            "https://crates.io/api/v1/crates/proto-fmt" || true)"
+
+          if [ -z "${response}" ]; then
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if RESPONSE="${response}" python - "${expected_version}" <<'PY'
+          import json
+          import os
+          import sys
+
+          expected = sys.argv[1]
+          payload = json.loads(os.environ["RESPONSE"])
+          versions = payload.get("versions", [])
+          sys.exit(0 if any(version.get("num") == expected for version in versions) else 1)
+          PY
+          then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Publish proto-fmt
+        if: steps.proto_fmt_version.outputs.exists != 'true'
         run: cargo publish -p proto-fmt --locked --registry crates-io
 
-      - name: Wait for proto-fmt visibility
+      - name: Check proto-fingerprint version on crates.io
+        id: proto_fingerprint_version
         env:
           PACKAGE_VERSION: ${{ github.ref_name }}
         run: |
           expected_version="${PACKAGE_VERSION#v}"
-          url="https://crates.io/api/v1/crates/proto-fmt"
+          response="$(curl --fail --silent --show-error --retry 5 --retry-delay 2 \
+            "https://crates.io/api/v1/crates/proto-fingerprint" || true)"
 
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent "${url}" | python - "${expected_version}" <<'PY'
+          if [ -z "${response}" ]; then
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if RESPONSE="${response}" python - "${expected_version}" <<'PY'
           import json
+          import os
           import sys
 
           expected = sys.argv[1]
-          payload = json.load(sys.stdin)
+          payload = json.loads(os.environ["RESPONSE"])
           versions = payload.get("versions", [])
-          if any(version.get("num") == expected for version in versions):
-              sys.exit(0)
-          sys.exit(1)
+          sys.exit(0 if any(version.get("num") == expected for version in versions) else 1)
           PY
-            then
-              echo "proto-fmt ${expected_version} is visible on crates.io."
-              exit 0
-            fi
-
-            echo "Waiting for proto-fmt ${expected_version} to appear on crates.io (${attempt}/30)..."
-            sleep 10
-          done
-
-          echo "proto-fmt ${expected_version} was not visible on crates.io before timeout."
-          exit 1
+          then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Publish proto-fingerprint
+        if: steps.proto_fingerprint_version.outputs.exists != 'true'
         run: cargo publish -p proto-fingerprint --locked --registry crates-io
-
-      - name: Wait for proto-fingerprint visibility
-        env:
-          PACKAGE_VERSION: ${{ github.ref_name }}
-        run: |
-          expected_version="${PACKAGE_VERSION#v}"
-          url="https://crates.io/api/v1/crates/proto-fingerprint"
-
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent "${url}" | python - "${expected_version}" <<'PY'
-          import json
-          import sys
-
-          expected = sys.argv[1]
-          payload = json.load(sys.stdin)
-          versions = payload.get("versions", [])
-          if any(version.get("num") == expected for version in versions):
-              sys.exit(0)
-          sys.exit(1)
-          PY
-            then
-              echo "proto-fingerprint ${expected_version} is visible on crates.io."
-              exit 0
-            fi
-
-            echo "Waiting for proto-fingerprint ${expected_version} to appear on crates.io (${attempt}/30)..."
-            sleep 10
-          done
-
-          echo "proto-fingerprint ${expected_version} was not visible on crates.io before timeout."
-          exit 1
